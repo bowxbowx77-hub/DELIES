@@ -119,6 +119,12 @@ jobs:
             WARNINGS=$(grep -c 'Warning:' "$FILE" || true)
             ERRORS=$(grep -c 'Error:' "$FILE" || true)
             echo "::notice title=Android lint::${WARNINGS} warnings, ${ERRORS} errors (report only, non-blocking)"
+            grep -B0 -A2 'Error:' "$FILE" | head -40 | tr -d '\r' | while IFS= read -r line; do
+              case "$line" in
+                "") ;;
+                *) echo "::warning title=Lint error::$(printf '%s' "$line" | cut -c1-900)" ;;
+              esac
+            done
           else
             echo "lint report not found"
           fi
