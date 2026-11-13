@@ -157,6 +157,35 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           echo "Embedded web asset entries: $(unzip -l "$APK" | grep -c 'assets/www/')"
 
+      # The artifact itself is the deliverable; this step proves its contents
+      # (package id, version, permissions, embedded web app) inside the run log.
+      - name: Inspect APK contents
+        working-directory: android
+        run: |
+          set -euo pipefail
+          APK="$(find app/build/outputs/apk -name '*.apk' | head -n 1)"
+          SIZE=$(stat -c%s "$APK")
+          SHA=$(sha256sum "$APK" | cut -d' ' -f1)
+          AAPT="$(ls "${ANDROID_HOME}"/build-tools/*/aapt2 2>/dev/null | tail -n 1)"
+          if [ -n "${AAPT:-}" ]; then
+            BADGING="$("$AAPT" dump badging "$APK")"
+            PKG="$(echo "$BADGING" | grep -m1 '^package:')"
+            SDK="$(echo "$BADGING" | grep -m1 '^sdkVersion:')"
+            TARGET="$(echo "$BADGING" | grep -m1 '^targetSdkVersion:')"
+            echo "::notice title=APK package::${PKG}"
+            echo "::notice title=APK SDK levels::${SDK} ${TARGET}"
+            PERMS="$(echo "$BADGING" | grep '^uses-permission:' | sed "s/uses-permission: name='//;s/'//" | tr '\n' ' ')"
+            echo "::notice title=APK permissions::${PERMS}"
+          fi
+          ENTRIES=$(unzip -l "$APK" | grep -c 'assets/www/')
+          INDEX=$(unzip -l "$APK" | grep -c 'assets/www/index.html')
+          echo "APK: $APK ($SIZE bytes, sha256 $SHA)"
+          echo "Embedded web assets: $ENTRIES entries, index.html=$INDEX"
+          echo "::notice title=APK size and hash::${SIZE} bytes, sha256 ${SHA}, web assets ${ENTRIES}, index.html ${INDEX}"
+          test "$INDEX" -ge 1
+          test "$ENTRIES" -ge 30
+          unzip -p "$APK" assets/www/index.html | head -n 3
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
