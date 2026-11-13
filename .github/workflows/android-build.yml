@@ -27,6 +27,9 @@ concurrency:
   group: android-build-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GRADLE_LOG: ${{ github.workspace }}/build-log.txt
+
 jobs:
   web-tests:
     name: Web app tests (jsdom)
@@ -84,7 +87,9 @@ jobs:
 
       - name: Run Android unit tests
         working-directory: android
-        run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest 2>&1 | tee "$GRADLE_LOG"
 
       - name: Lint (report only)
         working-directory: android
@@ -97,7 +102,24 @@ jobs:
           set -euo pipefail
           TASK="${{ github.event.inputs.build_type || 'assembleDebug' }}"
           echo "Running :app:$TASK"
-          ./gradlew --no-daemon --stacktrace ":app:$TASK"
+          ./gradlew --no-daemon --stacktrace ":app:$TASK" 2>&1 | tee -a "$GRADLE_LOG"
+
+      # Gradle output is surfaced as check-run annotations so failures are
+      # readable without downloading the full log archive.
+      - name: Report Gradle errors as annotations
+        if: failure()
+        run: |
+          echo "## Build log excerpt" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "$GRADLE_LOG" ]; then
+            grep -E "^e: |error:|FAILURE:|Execution failed|> Task .* FAILED|Unresolved reference|missing return" "$GRADLE_LOG" \
+              | head -25 \
+              | while IFS= read -r line; do
+                  clean=$(printf '%s' "$line" | tr -d '\r' | tr '\n' ' ' | cut -c1-900)
+                  echo "::error title=Gradle::$clean"
+                done
+            { echo '```'; tail -30 "$GRADLE_LOG"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit 0
 
       - name: Verify APK and collect metadata
         id: apk
@@ -132,7 +154,7 @@ jobs:
             echo "| SHA-256 | \`$SHA\` |"
             echo "| Path | \`$APK\` |"
           } >> "$GITHUB_STEP_SUMMARY"
-          unzip -l "$APK" | grep -c 'assets/www/' | xargs -I{} echo "Embedded web assets entries: {}"
+          echo "Embedded web asset entries: $(unzip -l "$APK" | grep -c 'assets/www/')"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -148,7 +170,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-unit-test-report
-          path: android/app/build/reports/tests/**
+          path: |
+            android/app/build/reports/tests/**
+            android/app/build/test-results/**
           if-no-files-found: ignore
           retention-days: 14
 

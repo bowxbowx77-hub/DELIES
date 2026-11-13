@@ -63,7 +63,7 @@ android {
     }
 
     sourceSets.getByName("main") {
-        assets.srcDir(webAssetsOutput)
+        assets.srcDir(webAssetsOutput.get().asFile)
     }
 
     packaging {

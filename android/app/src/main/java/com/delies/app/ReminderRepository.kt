@@ -57,19 +57,22 @@ class ReminderRepository private constructor(context: Context) {
 
     @Synchronized
     fun find(id: String): Reminder? {
-        helper.readableDatabase.rawQuery(
+        return helper.readableDatabase.rawQuery(
             "SELECT id, title, notes, at, recurrence, enabled FROM $TABLE_REMINDERS WHERE id = ? LIMIT 1",
             arrayOf(id)
         ).use { cursor ->
-            if (!cursor.moveToNext()) return null
-            return Reminder(
-                id = cursor.getString(0),
-                title = cursor.getString(1) ?: "",
-                notes = cursor.getString(2) ?: "",
-                at = cursor.getString(3) ?: "",
-                recurrence = Reminders.decodeRecurrence(cursor.getString(4)),
-                enabled = cursor.getInt(5) != 0
-            )
+            if (!cursor.moveToNext()) {
+                null
+            } else {
+                Reminder(
+                    id = cursor.getString(0),
+                    title = cursor.getString(1) ?: "",
+                    notes = cursor.getString(2) ?: "",
+                    at = cursor.getString(3) ?: "",
+                    recurrence = Reminders.decodeRecurrence(cursor.getString(4)),
+                    enabled = cursor.getInt(5) != 0
+                )
+            }
         }
     }
 

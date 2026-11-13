@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.time.format.ResolverStyle
 
 /**
  * Recurrence engine for native alarm scheduling.
@@ -20,8 +21,12 @@ import java.time.format.DateTimeParseException
  */
 object RecurrenceCalculator {
 
-    private val DATE_TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
-    private val DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    // STRICT + "uuuu" rejects impossible dates (e.g. 30 February) instead of
+    // silently rolling them over, matching the JavaScript validation rules.
+    private val DATE_TIME: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm").withResolverStyle(ResolverStyle.STRICT)
+    private val DATE: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT)
     private const val MAX_STEPS = 4000
 
     fun parseDateTime(value: String?): LocalDateTime? {
