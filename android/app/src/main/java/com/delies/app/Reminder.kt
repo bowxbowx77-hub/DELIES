@@ -32,7 +32,7 @@ data class Reminder(
 internal data class ReminderList(val reminders: List<Reminder> = emptyList())
 
 @Serializable
-internal data class HistoryItem(
+data class HistoryItem(
     val id: String = "",
     val reminderId: String = "",
     val title: String = "",

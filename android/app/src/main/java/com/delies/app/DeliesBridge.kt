@@ -59,9 +59,9 @@ class DeliesBridge(
                 "log" -> logFromWeb(raw)
                 else -> error("unknown method")
             }
-        } catch (error: Exception) {
-            Log.e(TAG, "Bridge call failed: $method", error)
-            error(error.message ?: "bridge failure")
+        } catch (failure: Exception) {
+            Log.e(TAG, "Bridge call failed: $method", failure)
+            error(failure.message ?: "bridge failure")
         }
     }
 
