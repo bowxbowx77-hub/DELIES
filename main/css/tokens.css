@@ -1,0 +1,240 @@
+/* ==========================================================================
+   DELIES — Material Design 3 design tokens
+   Palette: graphite surfaces + purple accents.
+   All colours chosen to keep WCAG AA contrast for body text.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Typography scale (M3) --- */
+  --font-sans: "Inter", "Roboto", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+
+  --fs-display-s: 2.25rem;
+  --fs-headline-s: 1.5rem;
+  --fs-title-l: 1.375rem;
+  --fs-title-m: 1rem;
+  --fs-title-s: 0.875rem;
+  --fs-body-l: 1rem;
+  --fs-body-m: 0.875rem;
+  --fs-body-s: 0.75rem;
+  --fs-label-l: 0.875rem;
+  --fs-label-m: 0.75rem;
+
+  --lh-tight: 1.2;
+  --lh-normal: 1.45;
+
+  /* --- Shape (M3 corner radii) --- */
+  --shape-xs: 4px;
+  --shape-s: 8px;
+  --shape-m: 12px;
+  --shape-l: 16px;
+  --shape-xl: 28px;
+  --shape-full: 999px;
+
+  /* --- Spacing scale (4dp grid) --- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+
+  /* --- Motion (M3 easing) --- */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --dur-short: 150ms;
+  --dur-medium: 250ms;
+  --dur-long: 400ms;
+
+  /* --- Elevation --- */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --elev-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  --app-bar-height: 64px;
+  --nav-bar-height: 80px;
+  --content-max-width: 840px;
+  --tap-target: 48px;
+}
+
+/* --------------------------------------------------------------------------
+   Dark scheme (default): graphite canvas, lavender accents
+   -------------------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --md-primary: #d0bcff;
+  --md-on-primary: #381e72;
+  --md-primary-container: #4f378b;
+  --md-on-primary-container: #eaddff;
+
+  --md-secondary: #ccc2dc;
+  --md-on-secondary: #332d41;
+  --md-secondary-container: #4a4458;
+  --md-on-secondary-container: #e8def8;
+
+  --md-tertiary: #efb8c8;
+  --md-on-tertiary: #492532;
+  --md-tertiary-container: #633b48;
+  --md-on-tertiary-container: #ffd8e4;
+
+  --md-error: #ffb4ab;
+  --md-on-error: #690005;
+  --md-error-container: #93000a;
+  --md-on-error-container: #ffdad6;
+
+  --md-success: #b7f0c0;
+  --md-success-container: #1f4d2b;
+  --md-warning: #ffdca8;
+  --md-warning-container: #5a3f00;
+
+  --md-background: #121016;
+  --md-on-background: #e7e1e9;
+  --md-surface: #121016;
+  --md-on-surface: #e7e1e9;
+  --md-surface-variant: #49454f;
+  --md-on-surface-variant: #cbc4cf;
+
+  --md-surface-dim: #121016;
+  --md-surface-bright: #39313c;
+  --md-surface-container-lowest: #0d0b10;
+  --md-surface-container-low: #1b181f;
+  --md-surface-container: #1f1c24;
+  --md-surface-container-high: #2a252f;
+  --md-surface-container-highest: #352f3a;
+
+  --md-outline: #948f99;
+  --md-outline-variant: #49454f;
+  --md-shadow: #000000;
+  --md-scrim: rgba(0, 0, 0, 0.6);
+  --md-inverse-surface: #e7e1e9;
+  --md-inverse-on-surface: #312d36;
+  --md-inverse-primary: #6750a4;
+
+  --md-state-hover: rgba(208, 188, 255, 0.08);
+  --md-state-focus: rgba(208, 188, 255, 0.12);
+  --md-state-pressed: rgba(208, 188, 255, 0.12);
+  --md-ripple: rgba(208, 188, 255, 0.16);
+
+  /* Translucent chrome (no color-mix(): old WebViews must render this) */
+  --md-bar-bg: rgba(31, 28, 36, 0.86);
+  --md-bar-bg-solid: #1f1c24;
+  --md-sheet-bg: #241f2b;
+  --md-hairline: rgba(73, 69, 79, 0.6);
+  --md-hairline-strong: rgba(148, 143, 153, 0.4);
+  --md-skeleton: rgba(231, 225, 233, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   Light scheme: soft lavender white canvas, deep purple accents
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --md-primary: #6750a4;
+  --md-on-primary: #ffffff;
+  --md-primary-container: #eaddff;
+  --md-on-primary-container: #21005d;
+
+  --md-secondary: #625b71;
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: #e8def8;
+  --md-on-secondary-container: #1d192b;
+
+  --md-tertiary: #7d5260;
+  --md-on-tertiary: #ffffff;
+  --md-tertiary-container: #ffd8e4;
+  --md-on-tertiary-container: #31111d;
+
+  --md-error: #b3261e;
+  --md-on-error: #ffffff;
+  --md-error-container: #f9dedc;
+  --md-on-error-container: #410e0b;
+
+  --md-success: #1f6b33;
+  --md-success-container: #c8f0ce;
+  --md-warning: #7a5300;
+  --md-warning-container: #ffe3a8;
+
+  --md-background: #f7f4fb;
+  --md-on-background: #1c1b1f;
+  --md-surface: #f7f4fb;
+  --md-on-surface: #1c1b1f;
+  --md-surface-variant: #e7e0ec;
+  --md-on-surface-variant: #49454f;
+
+  --md-surface-dim: #ddd8e0;
+  --md-surface-bright: #f7f4fb;
+  --md-surface-container-lowest: #ffffff;
+  --md-surface-container-low: #f3eef8;
+  --md-surface-container: #ece6f2;
+  --md-surface-container-high: #e6e0eb;
+  --md-surface-container-highest: #e0dae5;
+
+  --md-outline: #79747e;
+  --md-outline-variant: #cac4d0;
+  --md-shadow: #000000;
+  --md-scrim: rgba(0, 0, 0, 0.45);
+  --md-inverse-surface: #313033;
+  --md-inverse-on-surface: #f4eff4;
+  --md-inverse-primary: #d0bcff;
+
+  --md-state-hover: rgba(103, 80, 164, 0.08);
+  --md-state-focus: rgba(103, 80, 164, 0.12);
+  --md-state-pressed: rgba(103, 80, 164, 0.12);
+  --md-ripple: rgba(103, 80, 164, 0.16);
+
+  --md-bar-bg: rgba(236, 230, 242, 0.9);
+  --md-bar-bg-solid: #ece6f2;
+  --md-sheet-bg: #f7f2fb;
+  --md-hairline: rgba(202, 196, 208, 0.75);
+  --md-hairline-strong: rgba(121, 116, 126, 0.35);
+  --md-skeleton: rgba(28, 27, 31, 0.07);
+
+  --elev-1: 0 1px 2px rgba(28, 27, 31, 0.12), 0 1px 3px 1px rgba(28, 27, 31, 0.08);
+  --elev-2: 0 1px 2px rgba(28, 27, 31, 0.12), 0 2px 6px 2px rgba(28, 27, 31, 0.08);
+  --elev-3: 0 4px 8px 3px rgba(28, 27, 31, 0.08), 0 1px 3px rgba(28, 27, 31, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   Category / label accent colours (shared by both schemes)
+   Stored on entities as a palette id, mapped to a CSS custom property so that
+   light and dark schemes can use different lightness.
+   -------------------------------------------------------------------------- */
+:root {
+  --label-purple: #b39ddb;
+  --label-blue: #90caf9;
+  --label-teal: #80cbc4;
+  --label-green: #a5d6a7;
+  --label-amber: #ffcc80;
+  --label-orange: #ffab91;
+  --label-red: #ef9a9a;
+  --label-pink: #f48fb1;
+  --label-grey: #b0bec5;
+}
+
+:root[data-theme="light"] {
+  --label-purple: #6a4fa3;
+  --label-blue: #1565c0;
+  --label-teal: #00695c;
+  --label-green: #2e7d32;
+  --label-amber: #8c6d00;
+  --label-orange: #b34a1f;
+  --label-red: #b3261e;
+  --label-pink: #9c27b0;
+  --label-grey: #546e7a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-short: 0ms;
+    --dur-medium: 0ms;
+    --dur-long: 0ms;
+  }
+}

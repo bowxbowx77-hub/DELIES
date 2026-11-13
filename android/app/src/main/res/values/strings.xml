@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DELIES</string>
+    <string name="channel_reminders_name">Напоминания DELIES</string>
+    <string name="channel_reminders_description">Напоминания о событиях, задачах и делах</string>
+    <string name="notification_snooze">Отложить на 10 минут</string>
+    <string name="notification_dismiss">Готово</string>
+    <string name="notification_open">Открыть DELIES</string>
+    <string name="error_title">Не удалось загрузить DELIES</string>
+    <string name="error_text">Проверьте свободное место на устройстве и попробуйте снова.</string>
+    <string name="error_retry">Повторить</string>
+    <string name="loading">Загрузка…</string>
+    <string name="share_backup_title">Резервная копия DELIES</string>
+</resources>
