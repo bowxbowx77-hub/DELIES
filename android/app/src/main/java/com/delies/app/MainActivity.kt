@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.webkit.ConsoleMessage
@@ -20,7 +19,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -278,11 +276,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         if (current?.get() === this) current = null
-        try {
-            webView.stopLoading()
-            webView.destroy()
-        } catch (error: Exception) {
-            Log.w(TAG, "WebView destroy failed", error)
+        if (::webView.isInitialized) {
+            try {
+                webView.stopLoading()
+                webView.destroy()
+            } catch (error: Exception) {
+                Log.w(TAG, "WebView destroy failed", error)
+            }
         }
         super.onDestroy()
     }

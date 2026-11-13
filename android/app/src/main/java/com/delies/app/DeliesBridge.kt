@@ -42,7 +42,7 @@ class DeliesBridge(
             when (method) {
                 "info" -> info()
                 "capabilities" -> capabilities()
-                "notifyStatus" -> JSONObject().put("status", notificationStatus())
+                "notifyStatus" -> ok(JSONObject().put("status", notificationStatus()))
                 "requestNotifications" -> requestNotifications()
                 "notifyNow" -> notifyNow(raw)
                 "syncReminders" -> syncReminders(raw)
