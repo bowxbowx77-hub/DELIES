@@ -199,24 +199,35 @@ export class ReminderCenter {
         });
         added += 1;
       });
-      if (added) this.onChange('history');
+      if (added) {
+        // A one-off reminder that fired natively must stop being active in the
+        // web layer too, otherwise the two views disagree about its state.
+        this.store.all('reminders').forEach((reminder) => {
+          if (!reminder.enabled) return;
+          if (reminder.recurrence && reminder.recurrence.freq !== 'none') return;
+          const fired = this.store.find(
+            'history',
+            (entry) => entry.reminderId === reminder.id && (entry.action === 'fired' || entry.action === 'dismissed')
+          );
+          if (fired.length) {
+            this.store.put('reminders', {
+              ...reminder,
+              enabled: false,
+              lastFiredAt: fired[0].firedAt
+            });
+          }
+        });
+        this.onChange('history');
+      }
     } catch (error) {
       this.onError(error);
     }
   }
 
-  async sendTest() {
-    if (this.isNative) {
-      const shown = await this.platform.showNotification({
-        title: 'DELIES',
-        body: this.store.getSettings() ? '' : '',
-        tag: 'test'
-      });
-      return shown;
-    }
+  async sendTest(body) {
     return this.platform.showNotification({
       title: 'DELIES',
-      body: 'Тестовое уведомление',
+      body: body || 'DELIES',
       tag: 'test'
     });
   }

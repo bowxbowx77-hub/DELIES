@@ -90,7 +90,7 @@ export default function remindersView(ctx) {
     if (permissionStatus !== 'granted') {
       permissionStatus = await ctx.platform.requestNotifications();
     }
-    const ok = await ctx.reminders.sendTest();
+    const ok = await ctx.reminders.sendTest(t('reminders.testBody'));
     ctx.toast(ok ? t('toast.testSent') : t('toast.permissionDenied'), { error: !ok });
   }
 

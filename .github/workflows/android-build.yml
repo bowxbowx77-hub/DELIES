@@ -91,10 +91,38 @@ jobs:
           set -o pipefail
           ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest 2>&1 | tee "$GRADLE_LOG"
 
+      - name: Publish unit test summary
+        if: always()
+        working-directory: android
+        run: |
+          python3 - "$PWD" <<'PYEOF'
+          import glob, sys, xml.etree.ElementTree as ET
+          total = failures = skipped = 0
+          for path in glob.glob('app/build/test-results/testDebugUnitTest/*.xml'):
+              root = ET.parse(path).getroot()
+              total += int(root.get('tests', 0))
+              failures += int(root.get('failures', 0)) + int(root.get('errors', 0))
+              skipped += int(root.get('skipped', 0))
+          print(f"::notice title=Android unit tests::{total} tests, {failures} failed, {skipped} skipped")
+          PYEOF
+
       - name: Lint (report only)
         working-directory: android
         continue-on-error: true
         run: ./gradlew --no-daemon :app:lintDebug
+      - name: Publish lint summary
+        if: always()
+        working-directory: android
+        run: |
+          FILE=app/build/reports/lint-results-debug.txt
+          if [ -f "$FILE" ]; then
+            WARNINGS=$(grep -c 'Warning:' "$FILE" || true)
+            ERRORS=$(grep -c 'Error:' "$FILE" || true)
+            echo "::notice title=Android lint::${WARNINGS} warnings, ${ERRORS} errors (report only, non-blocking)"
+          else
+            echo "lint report not found"
+          fi
+
 
       - name: Assemble APK
         working-directory: android
