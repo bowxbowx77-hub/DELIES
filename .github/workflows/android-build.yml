@@ -158,33 +158,39 @@ jobs:
           echo "Embedded web asset entries: $(unzip -l "$APK" | grep -c 'assets/www/')"
 
       # The artifact itself is the deliverable; this step proves its contents
-      # (package id, version, permissions, embedded web app) inside the run log.
+      # (package id, version, permissions, embedded web app) inside the run.
       - name: Inspect APK contents
         working-directory: android
         run: |
-          set -euo pipefail
+          set -uo pipefail
           APK="$(find app/build/outputs/apk -name '*.apk' | head -n 1)"
+          if [ -z "$APK" ]; then echo "::error::APK missing"; exit 1; fi
           SIZE=$(stat -c%s "$APK")
           SHA=$(sha256sum "$APK" | cut -d' ' -f1)
+
           AAPT="$(ls "${ANDROID_HOME}"/build-tools/*/aapt2 2>/dev/null | tail -n 1)"
           if [ -n "${AAPT:-}" ]; then
-            BADGING="$("$AAPT" dump badging "$APK")"
-            PKG="$(echo "$BADGING" | grep -m1 '^package:')"
-            SDK="$(echo "$BADGING" | grep -m1 '^sdkVersion:')"
-            TARGET="$(echo "$BADGING" | grep -m1 '^targetSdkVersion:')"
-            echo "::notice title=APK package::${PKG}"
+            BADGING="$("$AAPT" dump badging "$APK" 2>/dev/null || true)"
+            PKG="$(printf '%s' "$BADGING" | grep -m1 '^package:' || true)"
+            SDK="$(printf '%s' "$BADGING" | grep -m1 '^sdkVersion:' || true)"
+            TARGET="$(printf '%s' "$BADGING" | grep -m1 '^targetSdkVersion:' || true)"
+            PERMS="$(printf '%s' "$BADGING" | grep '^uses-permission:' | sed "s/uses-permission: name='//;s/'\$//" | tr '\n' ' ' || true)"
+            echo "::notice title=APK package id and version::${PKG}"
             echo "::notice title=APK SDK levels::${SDK} ${TARGET}"
-            PERMS="$(echo "$BADGING" | grep '^uses-permission:' | sed "s/uses-permission: name='//;s/'//" | tr '\n' ' ')"
             echo "::notice title=APK permissions::${PERMS}"
+          else
+            echo "aapt2 not found, skipping badging"
           fi
-          ENTRIES=$(unzip -l "$APK" | grep -c 'assets/www/')
-          INDEX=$(unzip -l "$APK" | grep -c 'assets/www/index.html')
-          echo "APK: $APK ($SIZE bytes, sha256 $SHA)"
-          echo "Embedded web assets: $ENTRIES entries, index.html=$INDEX"
-          echo "::notice title=APK size and hash::${SIZE} bytes, sha256 ${SHA}, web assets ${ENTRIES}, index.html ${INDEX}"
-          test "$INDEX" -ge 1
-          test "$ENTRIES" -ge 30
-          unzip -p "$APK" assets/www/index.html | head -n 3
+
+          ENTRIES=$(unzip -l "$APK" | grep -c 'assets/www/' || true)
+          INDEX=$(unzip -l "$APK" | grep -c 'assets/www/index.html' || true)
+          APPFILE=$(unzip -l "$APK" | grep -c 'assets/www/js/app.js' || true)
+          echo "::notice title=APK size and hash::${SIZE} bytes, sha256 ${SHA}"
+          echo "::notice title=APK embedded web app::${ENTRIES} asset entries, index.html=${INDEX}, js/app.js=${APPFILE}"
+
+          if [ "${INDEX:-0}" -lt 1 ]; then echo "::error::index.html is not inside the APK"; exit 1; fi
+          if [ "${APPFILE:-0}" -lt 1 ]; then echo "::error::js/app.js is not inside the APK"; exit 1; fi
+          if [ "${ENTRIES:-0}" -lt 30 ]; then echo "::error::web assets are incomplete ($ENTRIES entries)"; exit 1; fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
