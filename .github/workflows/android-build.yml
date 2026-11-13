@@ -138,8 +138,9 @@ jobs:
           fi
           SHA=$(sha256sum "$APK" | cut -d' ' -f1)
           VERSION=$(grep -m1 'versionName' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          APK_ABS="$(cd "$(dirname "$APK")" && pwd)/$(basename "$APK")"
           {
-            echo "path=$APK"
+            echo "path=$APK_ABS"
             echo "size=$SIZE"
             echo "sha256=$SHA"
             echo "version=$VERSION"
