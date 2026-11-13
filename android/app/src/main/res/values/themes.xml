@@ -8,7 +8,9 @@
         <item name="android:statusBarColor">@color/delies_light_background</item>
         <item name="android:navigationBarColor">@color/delies_light_background</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <!-- Navigation-bar icon tint exists only from API 27; on API 26 the attribute
+             is ignored, so lint is told this item is intentionally newer. -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:windowBackground">@color/delies_light_background</item>
     </style>
 </resources>
