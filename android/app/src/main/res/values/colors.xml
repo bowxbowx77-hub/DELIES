@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="delies_graphite">#121016</color>
+    <color name="delies_graphite_surface">#1F1C24</color>
+    <color name="delies_purple">#6750A4</color>
+    <color name="delies_purple_light">#D0BCFF</color>
+    <color name="delies_on_purple">#381E72</color>
+    <color name="delies_light_background">#F7F4FB</color>
+    <color name="ic_launcher_background">#16131C</color>
+</resources>

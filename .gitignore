@@ -33,3 +33,18 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Node.js tooling for the web test suite (not shipped)
+node_modules/
+npm-debug.log*
+.npm/
+
+# Test output
+coverage/
+*.tsbuildinfo
+
+# Local Gradle/Android build outputs (see also the Gradle rules above)
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/

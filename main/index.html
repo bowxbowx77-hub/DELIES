@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="DELIES — персональный помощник для календаря, задач, напоминаний, заметок и покупок.">
+  <meta name="theme-color" content="#121016" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f4fb" media="(prefers-color-scheme: light)">
+  <meta name="referrer" content="no-referrer">
+  <title>DELIES</title>
+  <link rel="manifest" href="assets/manifest.webmanifest">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.svg">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/views.css">
+</head>
+<body>
+  <a class="visually-hidden" href="#view" id="skipLink">Перейти к содержимому</a>
+
+  <div class="app-shell" id="appShell">
+    <header class="app-bar" id="appBar">
+      <div class="app-bar__leading" id="appBarLeading"></div>
+      <div class="app-bar__titles">
+        <h1 class="app-bar__title" id="appBarTitle">DELIES</h1>
+        <p class="app-bar__subtitle" id="appBarSubtitle"></p>
+      </div>
+      <div class="app-bar__actions" id="appBarActions"></div>
+    </header>
+
+    <main class="view" id="view" role="main" tabindex="-1" aria-live="polite"></main>
+
+    <div class="fab-host" id="fabHost"></div>
+
+    <nav class="nav-bar" id="navBar" role="navigation" aria-label="Основная навигация"></nav>
+  </div>
+
+  <div class="dialog-host" id="dialogHost" role="presentation"></div>
+  <div class="sheet-host" id="sheetHost" role="presentation"></div>
+  <div class="snackbar-host" id="snackbarHost" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div style="padding:24px;font-family:sans-serif;text-align:center">
+      <h2>DELIES</h2>
+      <p>Для работы приложения требуется включённый JavaScript.</p>
+    </div>
+  </noscript>
+
+  <script>
+    // Applies the stored theme before first paint to avoid a colour flash.
+    (function () {
+      try {
+        var stored = window.localStorage.getItem('delies.themeHint');
+        var mode = stored === 'light' || stored === 'dark' ? stored : null;
+        if (!mode) {
+          mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', mode);
+      } catch (e) {
+        /* storage can be blocked: the default dark theme applies */
+      }
+    })();
+  </script>
+  <script type="module">
+    import { boot } from './js/app.js';
+    boot().catch(function (error) {
+      var view = document.getElementById('view');
+      if (view) {
+        view.replaceChildren();
+        var box = document.createElement('div');
+        box.className = 'card';
+        var title = document.createElement('p');
+        title.className = 'card__title';
+        title.textContent = 'Не удалось запустить DELIES';
+        var text = document.createElement('p');
+        text.className = 'card__body';
+        text.textContent = String(error && error.message ? error.message : error);
+        box.appendChild(title);
+        box.appendChild(text);
+        view.appendChild(box);
+      }
+      // eslint-disable-next-line no-console
+      console.error('[DELIES] fatal boot error', error);
+    });
+  </script>
+</body>
+</html>

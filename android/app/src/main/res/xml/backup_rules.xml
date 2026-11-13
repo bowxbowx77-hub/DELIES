@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="database" path="delies.db" />
+    <include domain="file" path="app_webview/" />
+    <include domain="file" path="backups/" />
+</full-backup-content>

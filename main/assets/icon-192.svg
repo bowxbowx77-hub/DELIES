@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="DELIES">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c5cd6"/>
+      <stop offset="1" stop-color="#d0bcff"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="46" fill="#16131c"/>
+  <rect x="10" y="10" width="172" height="172" rx="40" fill="url(#g)" opacity="0.16"/>
+  <path d="M66 48h32c30 0 48 19 48 48s-18 48-48 48H66z" fill="none" stroke="url(#g)" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M96 72v48" stroke="#d0bcff" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="140" cy="140" r="10" fill="#d0bcff"/>
+</svg>
